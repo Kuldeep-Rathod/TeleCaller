@@ -97,7 +97,7 @@ const handleSubmit = async () => {
             }`}
         >
             <div className="flex justify-between items-center">
-                <div>
+                <div className="flex flex-col text-start">
                     <p className="max-[321px]:text-[10px] text-base">{name}</p>
                     <p className="text-gray-300 max-[321px]:text-[8px] ">{mobile}</p>
                 </div>
