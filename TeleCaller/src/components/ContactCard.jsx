@@ -51,27 +51,35 @@ const ContactCard = ({ contact }) => {
     };
 
     return (
-        <div className="p-4 md:p-6 text-center shadow-lg rounded-2xl border bg-white w-full max-w-md mx-auto">
-            <h2 className="text-lg md:text-xl font-semibold">{name}</h2>
-            <p className="text-gray-800 font-medium">Mobile: {mobile}</p>
-            <p className="text-gray-600">Email: {email}</p>
-
-            <div className="flex justify-around mt-4 gap-2 md:gap-4">
+        <div className="p-4 md:p-6 shadow-lg rounded-2xl border bg-white w-full max-w-md mx-auto">
+            <div className="flex items-center justify-between">
+                <div>
+                    <h2 className="text-lg md:text-xl text-gray-800 font-semibold">
+                        {name}
+                    </h2>
+                    <p className="text-gray-800 font-medium text-sm">
+                        Mobile: {mobile}
+                    </p>
+                    <p className="text-gray-600 text-sm">Email: {email}</p>
+                </div>
                 <button
                     onClick={handleCall}
-                    className="border px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-blue-500 text-black"
+                    className="p-3 md:p-4 rounded-full flex items-center gap-1 md:gap-2 bg-[#04AA6D] text-black"
                 >
-                    <PhoneCall size={18} /> Call
+                    <PhoneCall className="text-white" size={18} />
                 </button>
+            </div>
+
+            <div className="flex justify-around mt-4 gap-2 md:gap-">
                 <button
                     onClick={handleWhatsApp}
-                    className="border px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-green-500 text-black"
+                    className=" px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-[#25D366] text-black"
                 >
                     <MessageCircle size={18} /> WhatsApp
                 </button>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="border px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-gray-500 text-black"
+                    className=" px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-[#BDD9F2] text-black"
                 >
                     <Info size={18} /> Info
                 </button>
@@ -79,7 +87,7 @@ const ContactCard = ({ contact }) => {
 
             {showModal && (
                 <div className="fixed inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center p-4">
-                    <div className="bg-white p-6 md:p-8 rounded-lg shadow-xl text-center w-full max-w-md">
+                    <div className="bg-white p-6 md:p-8 rounded-lg shadow-xl text-center w-[90%] max-w-md">
                         <h3 className="text-xl font-semibold mb-4 text-gray-800">
                             Add Details
                         </h3>
@@ -87,7 +95,7 @@ const ContactCard = ({ contact }) => {
                             placeholder="Enter Description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="border p-3 w-full h-28 resize-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="border border-gray-300 text-gray-800 p-3 w-full h-28 resize-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                         <div className="mt-4">
                             <DatePicker
@@ -95,19 +103,19 @@ const ContactCard = ({ contact }) => {
                                 onChange={(date) => setDateTime(date)}
                                 showTimeSelect
                                 dateFormat="Pp"
-                                className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="border border-gray-300 text-gray-800 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                             />
                         </div>
                         <div className="flex justify-between mt-6">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className="border px-4 py-2 rounded bg-red-500 text-black hover:bg-red-600"
+                                className=" px-4 py-2 rounded bg-red-500 text-black hover:bg-red-600"
                             >
                                 Close
                             </button>
                             <button
                                 onClick={handleSubmit}
-                                className="border px-4 py-2 rounded bg-blue-500 text-black hover:bg-blue-600"
+                                className=" px-4 py-2 rounded bg-blue-500 text-black hover:bg-blue-600"
                             >
                                 Submit
                             </button>
