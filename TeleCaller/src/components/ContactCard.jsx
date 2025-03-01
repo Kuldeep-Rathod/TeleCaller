@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { PhoneCall, MessageCircle, Info } from "lucide-react";
+import { PhoneCall, MessageCircle, Info, SquarePen, MessageCircleMore } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Swal from "sweetalert2";
@@ -10,7 +10,7 @@ const PROXY_SERVER = import.meta.env.VITE_PROXY_SERVER;
 const ContactCard = ({ contact }) => {
     if (!contact) return null;
 
-    const { id, name, mobile, email } = contact;
+    const { id, name, mobile, email, fetched_description } = contact;
     const [showModal, setShowModal] = useState(false);
     const [isHighlighted, setIsHighlighted] = useState(false);
     const [description, setDescription] = useState("");
@@ -23,6 +23,12 @@ const ContactCard = ({ contact }) => {
             setIsHighlighted(true);
         }
     }, [id]);
+
+    useEffect(() => {
+        if(fetched_description){
+            setDescription(fetched_description);
+        }
+    }, [fetched_description]);
 
     const handleCall = () => {
         let formattedNumber = mobile.startsWith("+91") ? mobile : `+91${mobile}`;
@@ -107,13 +113,13 @@ const handleSubmit = async () => {
                         onClick={handleWhatsApp}
                         className="border p-1 rounded bg-blue-700 text-white hover:bg-blue-800 transition"
                     >
-                        <MessageCircle size={12} />
+                        <MessageCircleMore size={12} />
                     </button>
                     <button
                         onClick={handleInfoClick}
                         className="border p-1 rounded bg-gray-800 text-white hover:bg-gray-700 transition"
                     >
-                        <Info size={12} />
+                        <SquarePen size={12} />
                     </button>
                 </div>
             </div>

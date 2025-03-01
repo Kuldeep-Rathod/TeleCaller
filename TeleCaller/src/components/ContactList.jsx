@@ -16,7 +16,7 @@ const ContactList = () => {
                     `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`
                 );
                 const data = await response.json();
-                console.log("Fetched Data:", data.values); // Debugging
+                // console.log("Fetched Data:", data.values); // Debugging
 
                 if (!data.values || data.values.length === 0) {
                     throw new Error("No data found.");
@@ -30,6 +30,7 @@ const ContactList = () => {
                     name: row[1] || "Unknown",
                     mobile: row[2] || "N/A",
                     email: row[3] || "N/A",
+                    fetched_description: row[4] || "N/A",
                 }));
                 
 
