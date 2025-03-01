@@ -1,121 +1,154 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PhoneCall, MessageCircle, Info } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Swal from "sweetalert2";
+
 
 const PROXY_SERVER = import.meta.env.VITE_PROXY_SERVER;
 
 const ContactCard = ({ contact }) => {
     if (!contact) return null;
 
-    const { name, mobile, email } = contact;
+    const { id, name, mobile, email } = contact;
     const [showModal, setShowModal] = useState(false);
+    const [isHighlighted, setIsHighlighted] = useState(false);
     const [description, setDescription] = useState("");
     const [dateTime, setDateTime] = useState(new Date());
 
-    const handleCall = () => (window.location.href = `tel:${mobile}`);
-    const handleWhatsApp = () =>
-        window.open(`https://wa.me/${mobile}`, "_blank");
-
-    const handleSubmit = async () => {
-        const newData = {
-            id: contact.id,
-            name: contact.name,
-            mobile: contact.mobile,
-            email: contact.email,
-            description: description,
-            dateTime: dateTime,
-        };
-
-        try {
-            const response = await fetch(`${PROXY_SERVER}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newData),
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to update Google Sheet.");
-            }
-
-            const result = await response.json();
-            console.log("Sheet Update Response:", result);
-            alert(result.message);
-            setShowModal(false);
-        } catch (error) {
-            console.error("Error updating sheet:", error);
-            alert("Failed to update sheet. Check console for details.");
+    // 🔹 Load border state from localStorage on mount
+    useEffect(() => {
+        const savedState = localStorage.getItem(`highlighted-${id}`);
+        if (savedState === "true") {
+            setIsHighlighted(true);
         }
+    }, [id]);
+
+    const handleCall = () => {
+        let formattedNumber = mobile.startsWith("+91") ? mobile : `+91${mobile}`;
+        window.location.href = `tel:${formattedNumber}`;
     };
 
-    return (
-        <div className="p-4 md:p-6 shadow-lg rounded-2xl border bg-white w-full max-w-md mx-auto">
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-lg md:text-xl text-gray-800 font-semibold">
-                        {name}
-                    </h2>
-                    <p className="text-gray-800 font-medium text-sm">
-                        Mobile: {mobile}
-                    </p>
-                    <p className="text-gray-600 text-sm">Email: {email}</p>
-                </div>
-                <button
-                    onClick={handleCall}
-                    className="p-3 md:p-4 rounded-full flex items-center gap-1 md:gap-2 bg-[#04AA6D] text-black"
-                >
-                    <PhoneCall className="text-white" size={18} />
-                </button>
-            </div>
+    const handleWhatsApp = () => window.open(`https://wa.me/${mobile}`, "_blank");
 
-            <div className="flex justify-around mt-4 gap-2 md:gap-">
-                <button
-                    onClick={handleWhatsApp}
-                    className=" px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-[#25D366] text-black"
-                >
-                    <MessageCircle size={18} /> WhatsApp
-                </button>
-                <button
-                    onClick={() => setShowModal(true)}
-                    className=" px-3 md:px-4 py-2 rounded flex items-center gap-1 md:gap-2 bg-[#BDD9F2] text-black"
-                >
-                    <Info size={18} /> Info
-                </button>
+    const handleInfoClick = () => {
+        setShowModal(true);
+        setIsHighlighted(true);
+        localStorage.setItem(`highlighted-${id}`, "true"); // 🔹 Save to localStorage
+    };
+
+
+const handleSubmit = async () => {
+    const newData = { id, name, mobile, email, description, dateTime };
+
+    try {
+        const response = await fetch(`${PROXY_SERVER}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(newData),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update Google Sheet.");
+        }
+
+        const result = await response.json();
+        console.log("Sheet Update Response:", result);
+
+        // ✅ Success Toast (Auto Close)
+        Swal.fire({
+            icon: "success",
+            title: "Updated Successfully!",
+            text: result.message,
+            timer: 2000, // Auto-close after 2 seconds
+            showConfirmButton: false,
+            toast: true,
+            position: "top-end",
+        });
+
+        setShowModal(false);
+    } catch (error) {
+        console.error("Error updating sheet:", error);
+
+        // ❌ Error Toast (Auto Close)
+        Swal.fire({
+            icon: "error",
+            title: "Update Failed!",
+            text: "Failed to update sheet. Check console for details.",
+            timer: 2000, // Auto-close after 2 seconds
+            showConfirmButton: false,
+            toast: true,
+            position: "top-end",
+        });
+    }
+};
+
+
+    return (
+        <div
+            className={`p-4 shadow-md rounded-xl border w-full max-w-sm mx-auto text-white text-sm transition ${
+                isHighlighted ? "border-red-500" : "border-gray-300"
+            }`}
+        >
+            <div className="flex justify-between items-center">
+                <div>
+                    <h2 className="text-base font-semibold">{name}</h2>
+                    <p className="text-gray-300">Mobile: {mobile}</p>
+                </div>
+
+                <div className="flex gap-2">
+                    <button
+                        onClick={handleCall}
+                        className="border p-1.5 rounded bg-blue-500 text-white hover:bg-blue-600 transition"
+                    >
+                        <PhoneCall size={16} />
+                    </button>
+                    <button
+                        onClick={handleWhatsApp}
+                        className="border p-1.5 rounded bg-blue-700 text-white hover:bg-blue-800 transition"
+                    >
+                        <MessageCircle size={16} />
+                    </button>
+                    <button
+                        onClick={handleInfoClick}
+                        className="border p-1.5 rounded bg-gray-800 text-white hover:bg-gray-700 transition"
+                    >
+                        <Info size={16} />
+                    </button>
+                </div>
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 bg-gray-100 bg-opacity-50 flex items-center justify-center p-4">
-                    <div className="bg-white p-6 md:p-8 rounded-lg shadow-xl text-center w-[90%] max-w-md">
-                        <h3 className="text-xl font-semibold mb-4 text-gray-800">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+                    <div className="bg-white p-4 rounded-lg shadow-xl text-center w-full max-w-xs">
+                        <h3 className="text-base font-semibold mb-3 text-gray-900">
                             Add Details
                         </h3>
                         <textarea
                             placeholder="Enter Description"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="border border-gray-300 text-gray-800 p-3 w-full h-28 resize-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            className="border p-2 w-full h-20 resize-none rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 text-sm"
                         />
-                        <div className="mt-4">
+                        <div className="mt-3">
                             <DatePicker
                                 selected={dateTime}
                                 onChange={(date) => setDateTime(date)}
                                 showTimeSelect
                                 dateFormat="Pp"
-                                className="border border-gray-300 text-gray-800 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                className="border p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-900 text-sm"
                             />
                         </div>
-                        <div className="flex justify-between mt-6">
+                        <div className="flex justify-between mt-4">
                             <button
                                 onClick={() => setShowModal(false)}
-                                className=" px-4 py-2 rounded bg-red-500 text-black hover:bg-red-600"
+                                className="border px-3 py-1.5 rounded bg-black text-white hover:bg-gray-900 text-sm"
                             >
                                 Close
                             </button>
                             <button
                                 onClick={handleSubmit}
-                                className=" px-4 py-2 rounded bg-blue-500 text-black hover:bg-blue-600"
+                                className="border px-3 py-1.5 rounded bg-blue-500 text-white hover:bg-blue-600 text-sm"
                             >
                                 Submit
                             </button>
