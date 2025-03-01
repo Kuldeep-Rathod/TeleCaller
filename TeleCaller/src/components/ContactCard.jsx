@@ -92,28 +92,28 @@ const handleSubmit = async () => {
         >
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-base font-semibold">{name}</h2>
-                    <p className="text-gray-300">Mobile: {mobile}</p>
+                    <p className="max-[321px]:text-[10px] text-base">{name}</p>
+                    <p className="text-gray-300 max-[321px]:text-[8px] ">{mobile}</p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-1">
                     <button
                         onClick={handleCall}
-                        className="border p-1.5 rounded bg-blue-500 text-white hover:bg-blue-600 transition"
+                        className="border p-1 rounded bg-blue-500 text-white hover:bg-blue-600 transition"
                     >
-                        <PhoneCall size={16} />
+                        <PhoneCall size={12} />
                     </button>
                     <button
                         onClick={handleWhatsApp}
-                        className="border p-1.5 rounded bg-blue-700 text-white hover:bg-blue-800 transition"
+                        className="border p-1 rounded bg-blue-700 text-white hover:bg-blue-800 transition"
                     >
-                        <MessageCircle size={16} />
+                        <MessageCircle size={12} />
                     </button>
                     <button
                         onClick={handleInfoClick}
-                        className="border p-1.5 rounded bg-gray-800 text-white hover:bg-gray-700 transition"
+                        className="border p-1 rounded bg-gray-800 text-white hover:bg-gray-700 transition"
                     >
-                        <Info size={16} />
+                        <Info size={12} />
                     </button>
                 </div>
             </div>
