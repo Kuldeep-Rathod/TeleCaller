@@ -35,7 +35,10 @@ const ContactCard = ({ contact }) => {
         window.location.href = `tel:${formattedNumber}`;
     };
 
-    const handleWhatsApp = () => window.open(`https://wa.me/${mobile}`, "_blank");
+    const handleWhatsApp = () => {
+        let formattedNumber = mobile.startsWith("+91") ? mobile : `+91${mobile}`;
+        window.open(`https://wa.me/${formattedNumber}`, "_blank");
+    }
 
     const handleInfoClick = () => {
         setShowModal(true);
