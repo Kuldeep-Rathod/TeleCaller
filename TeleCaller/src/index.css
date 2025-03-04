@@ -41,6 +41,11 @@ h1 {
   line-height: 1.1;
   color: #ffffff; /* White text */
 }
+h2 {
+  font-size: 1.5em;
+  line-height: 1.1;
+  color: #ffffff; /* White text */
+}
 
 /* Buttons */
 button {
@@ -70,7 +75,7 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #212529; /* Black text */
-    background-color: #ffffff; /* White background */
+    background-color: #121212; /* White background */
   }
 
   a {
